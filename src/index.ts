@@ -8,6 +8,8 @@ import { exec } from 'child_process'
 const port = ((p) => (p != null ? parseInt(p, 10) : 8000))(process.env.PORT)
 const app = express()
 
+app.use(express.static('public'))
+
 app.get(/\/eq((?:\d+(?:\.\d*)?)?)\/(.*)/, async (req, res) => {
   const scale = parseFloat(req.params[0] || '1.0')
   console.log(scale)
