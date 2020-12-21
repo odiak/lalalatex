@@ -5,6 +5,10 @@
   "repository": "git@github.com:odiak/lalalatex.git",
   "author": "Kaido Iwamoto <h6824.kaido@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "dev": "nodemon --watch src --ext ts --exec 'ts-node src/index.ts'"
+  },
   "dependencies": {
     "@types/express": "^4.17.9",
     "@types/node": "^14.14.14",
