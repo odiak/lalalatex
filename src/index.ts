@@ -60,7 +60,7 @@ app.get(/\/eq((?:\d+(?:\.\d*)?)?)\/(.*)/, async (req, res) => {
   const equation = req.params[1]
   const content = await generateImage(equation, scale).catch(() => errorImage)
   res.contentType('image/svg+xml')
-  res.set('Cache-Control', `public, max-age=${60 * 60 * 24 * 3}`)
+  res.set('Cache-Control', `public, max-age=${60 * 60 * 24 * 1}`)
   res.send(content)
 })
 
