@@ -26,6 +26,7 @@ async function generateImage(equation: string, scale: number): Promise<string> {
 \\documentclass{extarticle}
 \\usepackage[a2paper,landscape]{geometry}
 \\usepackage{graphics}
+\\usepackage{amsmath,amssymb}
 \\begin{document}
 \\pagestyle{empty}
   \\scalebox{${scale * 1.5}}{$
