@@ -18,11 +18,12 @@ const app = express()
 app.use(express.static('public'))
 
 async function generateImage(equation: string, scale: number): Promise<string> {
-  const baseDir = os.tmpdir()
+  const baseDir = path.join(os.tmpdir(), 'lalalatex-')
   const tmpDir = await fs.mkdtemp(baseDir)
-  const inputFile = path.join(tmpDir, 'input.tex')
-  const f = await fs.open(inputFile, 'w')
-  await f.write(`
+  try {
+    const inputFile = path.join(tmpDir, 'input.tex')
+    const f = await fs.open(inputFile, 'w')
+    await f.write(`
 \\documentclass{extarticle}
 \\usepackage[a2paper,landscape]{geometry}
 \\usepackage{graphics}
@@ -34,25 +35,28 @@ async function generateImage(equation: string, scale: number): Promise<string> {
   $}
 \\end{document}
 `)
-  await f.close()
-  await new Promise<void>((resolve, reject) => {
-    exec(
-      `bash -c 'cd ${tmpDir} && pdflatex -interaction=nonstopmode input.tex && pdfcrop input.pdf cropped.pdf && pdf2svg cropped.pdf output.svg'`,
-      (error, stdout, stderr) => {
-        if (stderr) {
-          console.log(stderr)
+    await f.close()
+    await new Promise<void>((resolve, reject) => {
+      exec(
+        `bash -c 'cd ${tmpDir} && pdflatex -interaction=nonstopmode input.tex && pdfcrop input.pdf cropped.pdf && pdf2svg cropped.pdf output.svg'`,
+        (error, _, stderr) => {
+          if (stderr) {
+            console.log(stderr)
+          }
+          if (error) {
+            reject(error)
+          }
+          resolve()
         }
-        if (error) {
-          reject(error)
-        }
-        resolve()
-      }
-    )
-  })
-  const svgFile = await fs.open(path.join(tmpDir, 'output.svg'), 'r')
-  const content = await svgFile.readFile()
-  await svgFile.close()
-  return content.toString()
+      )
+    })
+    const svgFile = await fs.open(path.join(tmpDir, 'output.svg'), 'r')
+    const content = await svgFile.readFile()
+    await svgFile.close()
+    return content.toString()
+  } finally {
+    await fs.rm(tmpDir, { recursive: true, force: true })
+  }
 }
 
 app.get(/\/eq((?:\d+(?:\.\d*)?)?)\/(.*)/, async (req, res) => {
