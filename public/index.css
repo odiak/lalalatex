@@ -12,6 +12,7 @@ label {
   display: block;
 }
 
-#generate-button {
+#generate-button,
+#ungenerate-button {
   margin: 20px;
 }

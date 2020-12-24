@@ -2,7 +2,8 @@ const codeInput = document.getElementById('code')
 const scaleInput = document.getElementById('scale')
 const urlInput = document.getElementById('url')
 const previewImage = document.getElementById('preview-image')
-const button = document.getElementById('generate-button')
+const generateButton = document.getElementById('generate-button')
+const ungenerateButton = document.getElementById('ungenerate-button')
 
 function bind() {
   const code = codeInput.value
@@ -15,6 +16,15 @@ function bind() {
 
 bind()
 
-button.addEventListener('click', () => {
+generateButton.addEventListener('click', () => {
   bind()
+})
+
+ungenerateButton.addEventListener('click', () => {
+  const m = urlInput.value.match(/\/eq(\d+(?:\.\d*)?)?\/(.+)/)
+  if (m == null) return
+  const scale = parseFloat(m[1] || '1.0')
+  const equation = decodeURI(m[2])
+  scaleInput.value = String(scale)
+  codeInput.value = equation
 })
